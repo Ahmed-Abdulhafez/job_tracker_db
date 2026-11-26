@@ -1,21 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const jobController = require('../controllers/job.controller.cjs');
-const verifyToken = require('../middlewares/auth.middleware.cjs');
 
-// create Job
-router.post('/', verifyToken, jobController.createJob);
+const jobController = require("../controllers/job.controller.cjs");
+const verifyToken = require("../middlewares/auth.middleware.cjs");
+const { isAdmin } = require("../middlewares/isAdmin.middleware.cjs");
 
-// get User Jobs
-router.get('/', verifyToken, jobController.getUserJobs);
+// Admin routes - إدارة الوظائف (إنشاء، تعديل، حذف)
+router.post("/", verifyToken, isAdmin, jobController.createJob);
+router.put("/:id", verifyToken, isAdmin, jobController.updateJob);
+router.delete("/:id", verifyToken, isAdmin, jobController.deleteJob);
 
-// get Job By Id
-router.get('/:id', verifyToken, jobController.getJobById);
-
-// update Job
-router.put('/:id', verifyToken, jobController.updateJob);
-
-// delete Job
-router.delete('/:id', verifyToken, jobController.deleteJob);
+// Authenticated user routes - عرض الوظائف
+router.get("/", verifyToken, jobController.getUserJobs);
+router.get("/:id", verifyToken, jobController.getJobById);
 
 module.exports = router;

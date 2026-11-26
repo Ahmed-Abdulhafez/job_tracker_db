@@ -11,6 +11,8 @@ const {
 
 const applicationController = require("../controllers/application.controller.cjs");
 const verifyToken = require("../middlewares/auth.middleware.cjs");
+const { isAdmin } = require("../middlewares/isAdmin.middleware.cjs");
+
 
 // 1. تقييم السيرة الذاتية مع الوظيفة وتوليد خطاب التغطية
 router.post(
@@ -24,6 +26,7 @@ router.post(
 router.get(
   "/",
   verifyToken,
+  isAdmin,
   applicationController.getAllApplication,
 );
 

@@ -8,6 +8,8 @@ const {
 } = require("../middlewares/extract.text.middleware.cjs");
 
 const verifyToken = require("../middlewares/auth.middleware.cjs"); 
+const { isAdmin } = require("../middlewares/isAdmin.middleware.cjs");
+
 
 // Route to upload and analyze resume
 router.post(
@@ -23,7 +25,7 @@ router.post(
 router.get("/all", verifyToken, resumeController.getAllResumesForUser);
 
 // get All Resumes
-router.get("/", authMiddleware, resumeController.getAllResumes);
+router.get("/", verifyToken, isAdmin, resumeController.getAllResumes);
 
 // update Resume By Id
 router.put("/:id", authMiddleware, resumeController.updateResumeById);

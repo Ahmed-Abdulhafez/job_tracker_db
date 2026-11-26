@@ -6,28 +6,25 @@ const {
   registerSchema,
   loginSchema,
 } = require("../validations/user.validation.cjs");
+
 const verifyToken = require("../middlewares/auth.middleware.cjs");
+const { isAdmin } = require("../middlewares/isAdmin.middleware.cjs");
+
 const router = express.Router();
 
-// User Registration Routes
-router.post("/register",validate(registerSchema), userController.userRegister);
+// Public Auth Routes - User Registration and User Login
+router.post("/register", validate(registerSchema), userController.userRegister);
+router.post("/login", validate(loginSchema), userController.userLogin);
 
-// User Login Routes
-router.post("/login",validate(loginSchema), userController.userLogin);
-
-// Get All Users Route
-router.get("/", userController.getAllUsers);
-
-// Get User profile Route
+// Get User profile and Update User profile
 router.get("/profile", verifyToken, userController.getMyProfile);
-
-// Update User profile Route
 router.put("/profile", verifyToken, userController.updateUserProfile);
 
-// Get User By ID Route
-router.get("/:id", userController.getUserById);
+// Admin Routes - delete User and Get All Users
+router.get("/", verifyToken, isAdmin, userController.getAllUsers);
+router.delete("/:id", verifyToken, isAdmin, userController.deleteUser);
 
-// delete User
-router.delete("/:id", userController.deleteUser);
+// Get User By ID
+router.get("/:id", verifyToken, userController.getUserById);
 
 module.exports = router;
